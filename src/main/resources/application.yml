@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: api-gateway
+
+  config:
+    import: optional:configserver:${SPRING_CONFIG_URI}
