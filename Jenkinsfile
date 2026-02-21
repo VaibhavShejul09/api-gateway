@@ -27,10 +27,10 @@ pipeline {
                     usernameVariable: 'DOCKER_USER'
                     passwordVariable: 'DOCKE_PASS'
                 )]){
-                    git '''
-                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                    docker push $DOCKER_IMAGE:v1
-                    '''
+                    sh '''
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        docker push $DOCKER_IMAGE:v1
+                '''
                 }
             }
         }
