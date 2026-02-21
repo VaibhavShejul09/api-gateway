@@ -35,7 +35,7 @@ pipeline {
                 script{
                     def tag = "${env.BUILD_NUMBER}-${env.GIT_COMMIT.take(7)}"
                     env.IMAGE_TAG = tag
-                    sh 'docker build -t ${DOCKER_IMAGE}:${tag} .'
+                    sh "docker build -t ${DOCKER_IMAGE}:${tag} ."
                 }
             }
         }
