@@ -7,7 +7,8 @@ pipeline {
     stages{
         stage('checkout code'){
             steps{
-                git branch 'master',  url: 'https://github.com/VaibhavShejul09/api-gateway.git'
+                git branch: 'main',
+                    url: 'https://github.com/VaibhavShejul09/api-gateway.git'
             }
         }
 
