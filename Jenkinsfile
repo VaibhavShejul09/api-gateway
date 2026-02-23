@@ -72,7 +72,7 @@ pipeline {
             steps {
                 dir('helm-chart'){
                     // Clone your Helm chart repo
-                    git branch: 'main', url: 'https://github.com/VaibhavShejul09/Helm_Repo.git'
+                    git branch: 'master', url: 'https://github.com/VaibhavShejul09/Helm_Repo.git'
                 }
             }
         }
