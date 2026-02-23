@@ -64,8 +64,7 @@ pipeline {
             steps {
                     sh 'kubectl get nodes'
             }
-        }
-/*        
+        }      
         stage('Checkout Helm Charts') {
             steps {
                 dir('helm-chart'){
@@ -79,12 +78,10 @@ pipeline {
                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
                     sh """
                     helm upgrade --install apigateway helm-chart/Rankx/charts/microservice-base -f helm-chart/services/frontend.yaml/values.yaml \
-                        --namespace my-app \
-                        --kubeconfig=$KUBECONFIG_FILE \
+                        --namespace my-app 
                     """
                 }
             }
-        }
-*/        
+        }       
     }
 }
