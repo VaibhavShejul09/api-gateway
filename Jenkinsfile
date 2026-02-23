@@ -63,7 +63,7 @@ pipeline {
             steps {
                 // Use Jenkins secret file credential for kubeconfig
                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
-                    sh 'kubectl --kubeconfig=$KUBECONFIG_FILE get nodes'
+                    sh 'kubectl --kubeconfig=$KUBECONFIG_FILE get nodes --insecure-skip-tls-verify'
                 }
             }
         }
