@@ -64,7 +64,7 @@ pipeline {
             steps {
                 // Use Jenkins secret file credential for kubeconfig
                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
-                    sh 'kubectl --kubeconfig=$KUBECONFIG_FILE get nodes --insecure-skip-tls-verify'
+                    sh 'kubectl --kubeconfig=$KUBECONFIG_FILE get nodes'
                 }
             }
         }
@@ -83,7 +83,6 @@ pipeline {
                     helm upgrade --install apigateway helm-chart/Rankx/charts/microservice-base -f helm-chart/services/frontend.yaml/values.yaml \
                         --namespace my-app \
                         --kubeconfig=$KUBECONFIG_FILE \
-                        --insecure-skip-tls-verify \
                     """
                 }
             }
