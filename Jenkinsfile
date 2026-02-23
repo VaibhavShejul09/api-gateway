@@ -59,10 +59,12 @@ pipeline {
                 }
             }
         }
-        stage('get nodes'){
-            steps{
-                sh 'kubectl get nodes --server=https://192.168.56.103:8443 --insecure-skip-tls-verify'
-            }
+        stage('Get Nodes') {
+               steps {
+                   withCredentials([file(credentialsId: 'kubeconfig')]) {
+                   sh 'kubectl get nodes'
+                }
+             }
         }
     }
 }
