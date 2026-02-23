@@ -80,7 +80,7 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
                     sh """
-                    helm upgrade --install apigateway /Rankx/charts/microservice-base -f services/frontend.yaml/values.yaml \
+                    helm upgrade --install apigateway helm-chart/Rankx/charts/microservice-base -f services/frontend.yaml/values.yaml \
                         --namespace my-app \
                         --kubeconfig=$KUBECONFIG_FILE \
                         --insecure-skip-tls-verify \
