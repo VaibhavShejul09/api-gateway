@@ -62,9 +62,7 @@ pipeline {
         }
         stage('Get Nodes') {
             steps {
-                    sh """
-                       kubectl get nodes
-                    """
+                    sh 'kubectl get nodes'
             }
         }
 /*        
