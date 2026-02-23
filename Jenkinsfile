@@ -61,7 +61,7 @@ pipeline {
         }
         stage('get nodes'){
             steps{
-                sh 'kubectl get nodes'
+                sh 'kubectl get nodes --server=https://192.168.56.103:8443 --insecure-skip-tls-verify'
             }
         }
     }
