@@ -64,10 +64,10 @@ pipeline {
             steps {
                 // Use Jenkins secret file credential for kubeconfig
                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
-                    sh '''
+                    sh """
                        chmod 600 $KUBECONFIG_FILE
                        kubectl --kubeconfig=$KUBECONFIG_FILE get nodes
-                    '''
+                    """
                 }
             }
         }
