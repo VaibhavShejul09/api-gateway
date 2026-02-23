@@ -3,6 +3,7 @@ pipeline {
 
     environment{
         DOCKER_IMAGE= "shejulv088/jenkins_api_gateway"
+        KUBECONFIG_FILE = ''  // Will be set via withCredentials
     }
     stages{
         stage('checkout code'){
@@ -67,5 +68,26 @@ pipeline {
                 }
             }
         }
+        stage('Checkout Helm Charts') {
+            steps {
+                dir('helm-chart'){
+                    // Clone your Helm chart repo
+                    git branch: 'main', url: 'https://github.com/VaibhavShejul09/Helm_Repo.git'
+                }
+            }
+        }
+        stage('Helm Deploy') {
+            steps {
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
+                    sh """
+                    helm upgrade --install apigateway /Rankx/charts/microservice-base services/frontend.yaml/values.yaml \
+                        --namespace my-app \
+                        --kubeconfig=$KUBECONFIG_FILE \
+                        --insecure-skip-tls-verify \
+                    """
+                }
+            }
+        }
+        
     }
 }
