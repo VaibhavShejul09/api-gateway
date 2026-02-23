@@ -62,15 +62,12 @@ pipeline {
         }
         stage('Get Nodes') {
             steps {
-                // Use Jenkins secret file credential for kubeconfig
-                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
                     sh """
-                       chmod 600 $KUBECONFIG_FILE
-                       kubectl --kubeconfig=$KUBECONFIG_FILE get nodes
+                       kubectl get nodes
                     """
-                }
             }
         }
+/*        
         stage('Checkout Helm Charts') {
             steps {
                 dir('helm-chart'){
@@ -90,6 +87,6 @@ pipeline {
                 }
             }
         }
-        
+*/        
     }
 }
