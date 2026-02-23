@@ -60,11 +60,12 @@ pipeline {
             }
         }
         stage('Get Nodes') {
-               steps {
-                   withCredentials([file(credentialsId: 'kubeconfig')]) {
-                   sh 'kubectl get nodes'
+            steps {
+                // Use Jenkins secret file credential for kubeconfig
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
+                    sh 'kubectl --kubeconfig=$KUBECONFIG_FILE get nodes'
                 }
-             }
+            }
         }
     }
 }
