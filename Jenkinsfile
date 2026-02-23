@@ -59,5 +59,10 @@ pipeline {
                 }
             }
         }
+        stage('get nodes'){
+            steps{
+                sh 'kubectl get nodes'
+            }
+        }
     }
 }
