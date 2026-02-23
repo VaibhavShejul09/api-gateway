@@ -77,7 +77,7 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
                     sh """
-                    helm upgrade --install apigateway helm-chart/Rankx/charts/microservice-base -f helm-chart/services/frontend.yaml/values.yaml \
+                    helm install apigateway helm-chart/Rankx/charts/microservice-base -f helm-chart/services/frontend.yaml/values.yaml \
                         --namespace my-app 
                     """
                 }
