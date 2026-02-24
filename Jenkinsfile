@@ -4,7 +4,7 @@ pipeline {
     environment{
         DOCKER_IMAGE= "shejulv088/jenkins_api_gateway"
         KUBECONFIG_FILE = ''  // Will be set via withCredentials
-    }
+    }    
     stages{
         stage('checkout code'){
             steps{
@@ -59,7 +59,7 @@ pipeline {
                 """
                 }
             }
-        }
+        }  
         stage('Get Nodes') {
             steps {
                     sh 'kubectl get nodes'
@@ -78,7 +78,7 @@ pipeline {
                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
                     sh """
                     helm install apigateway helm-chart/Rankx/charts/microservice-base -f helm-chart/Rankx/services/api-gateway/values.yaml \
-                        --set image.repository=${DOCKER_IMAGE} --set image.tag={env.IMAGE_TAG}
+                        --set image.repository=${DOCKER_IMAGE} --set image.tag=${env.IMAGE_TAG}
                         -n my-app 
                     """
                 }
