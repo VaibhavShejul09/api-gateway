@@ -77,7 +77,7 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
                     sh """
-                    helm install apigateway helm-chart/Rankx/charts/microservice-base -f helm-chart/Rankx/services/api-gateway/values.yaml \
+                    helm upgrade apigateway helm-chart/Rankx/charts/microservice-base -f helm-chart/Rankx/services/api-gateway/values.yaml \
                         --set image.repository=${DOCKER_IMAGE} --set image.tag=${env.IMAGE_TAG}
                         -n my-app 
                     """
