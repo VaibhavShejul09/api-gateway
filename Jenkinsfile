@@ -63,22 +63,28 @@ pipeline{
         stage('Upadte the Helm Values'){
             steps{
                 withCredentials([string(credentialsId: 'git-token', variable: 'GIT_TOKEN')]) {
-                   sh '''
-                   git clone https://github.com/VaibhavShejul09/rankx-environments.git
-                   cd rankx-environments
+               sh '''
+               # Clone the repo
+                git clone https://github.com/VaibhavShejul09/rankx-environments.git
+                cd rankx-environments
 
-                   git config user.email "ci@jenkins.com"
-                   git config user.name "jenkins"
+                # Configure Git author
+                git config user.email "ci@jenkins.com"
+                git config user.name "jenkins"
 
-                   git remote set-url origin https://VaibhavShejul09:'"$GIT_TOKEN"'@github.com/VaibhavShejul09/rankx-environments.git
+                # Set remote URL with token safely
+                git remote set-url origin https://VaibhavShejul09:$GIT_TOKEN@github.com/VaibhavShejul09/rankx-environments.git
 
-                   cd dev/api-gateway
-                   sed -i "s/tag:.*/tag: \\"'"$IMAGE_TAG"'\\"/" values.yaml
+                cd dev/api-gateway
 
-                   git add values.yaml
-                   git commit -m "Update image tag to '"$IMAGE_TAG"'"
-                   git push
-                   '''
+                # Update values.yaml
+                sed -i "s/tag:.*/tag: \\"$IMAGE_TAG\\"/" values.yaml
+
+                # Commit and push
+                git add values.yaml
+                git commit -m "Update image tag to $IMAGE_TAG"
+                git push origin main
+                '''    
                 } 
             }
         }
