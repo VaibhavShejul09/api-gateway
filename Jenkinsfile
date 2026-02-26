@@ -135,7 +135,7 @@ pipeline{
                   branch  'master'
                   }
                   steps {
-                      input "Deploy to PRODUCTION??"
+                      input "Deploy to PRODUCTION?"
           }
       }
     }
