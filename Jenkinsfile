@@ -16,7 +16,7 @@ pipeline{
                     else if (env.BRANCH_NAME == "release") {
                         env.ENVIRONMENT = "qa"
                     } 
-                    else if (env.BRANCH_NAME == "main") {
+                    else if (env.BRANCH_NAME == "master") {
                         env.ENVIRONMENT = "prod"
                     } 
                     else {
@@ -129,6 +129,14 @@ pipeline{
                    '''
                  }   
              }
-        }   
+        }
+        stage('Manual Approval for Prod') {
+               when {
+                  branch  'master'
+                  }
+                  steps {
+                      input "Deploy to PRODUCTION?"
+          }
+      }
     }
 }
