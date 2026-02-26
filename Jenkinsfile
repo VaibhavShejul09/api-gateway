@@ -94,7 +94,7 @@ pipeline{
                   withCredentials([string(credentialsId: 'git-token', variable: 'GIT_TOKEN')]) {
                     sh '''
                          # Clean previous helm repo folder
-                         # rm -rf rankx-environments
+                         rm -rf rankx-environments
                          # Clone the helm / environment repo
                          git clone https://VaibhavShejul09:$GIT_TOKEN@github.com/VaibhavShejul09/centralized-helm-repo.git
 
@@ -102,7 +102,8 @@ pipeline{
                          helm upgrade --install apigateway centralized-helm-repo/charts/microservice-base -f rankx-environments/$ENVIRONMENT/api-gateway/values.yaml \
                          --namespace $ENVIRONMENT \
                          --create-namespace \
-                         --atomic --wait
+                         --atomic --wait \
+                         --timeout 10m --debug
 
                    '''
                  }   
