@@ -103,7 +103,7 @@ pipeline{
                          --namespace $ENVIRONMENT \
                          --create-namespace \
                          --atomic --wait \
-                         --timeout 10m --debug
+                         --timeout 5m --debug
 
                    '''
                  }   
