@@ -3,10 +3,31 @@ pipeline{
      
     environment{
         DOCKER_IMAGE= "shejulv088/jenkins_api_gateway"
-        ENVIRONMENT= "dev"
+        ENVIRONMENT= ""   // will be set dynamically
         ENV_HELM_REPO = "https://github.com/VaibhavShejul09/rankx-environments.git"
         KUBECONFIG_FILE = ''  // Will be set via withCredentials
     }
+    stage('Set Environment Based on Branch') {
+            steps {
+                script {
+                    if (env.BRANCH_NAME == "develop") {
+                        env.ENVIRONMENT = "dev"
+                    } 
+                    else if (env.BRANCH_NAME == "release") {
+                        env.ENVIRONMENT = "qa"
+                    } 
+                    else if (env.BRANCH_NAME == "main") {
+                        env.ENVIRONMENT = "prod"
+                    } 
+                    else {
+                        error "Branch ${env.BRANCH_NAME} not allowed for deployment"
+                    }
+
+                    echo "Branch: ${env.BRANCH_NAME}"
+                    echo "Deploying to namespace: ${env.ENVIRONMENT}"
+                }
+            }
+        }
     stages{
         stage('Checkout the code'){
             steps{
