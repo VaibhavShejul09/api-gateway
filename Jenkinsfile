@@ -63,7 +63,7 @@ pipeline{
         stage('Upadte the Helm Values'){
             steps{
                 withCredentials([string(credentialsId: 'git-token', variable: 'GIT_TOKEN')]) {
-                   sh """
+                   sh '''
                    git clone https://github.com/VaibhavShejul09/rankx-environments.git
                    cd rankx-environments
 
@@ -78,7 +78,7 @@ pipeline{
                    git add values.yaml
                    git commit -m "Update image tag to '"$IMAGE_TAG"'"
                    git push
-                   """
+                   '''
                 } 
             }
         }
