@@ -10,6 +10,7 @@ pipeline{
     stages{
         stage('Checkout the code'){
             steps{
+                cleanWs()
                 git branch: 'master', url: 'https://github.com/VaibhavShejul09/api-gateway.git'
             }
         }
