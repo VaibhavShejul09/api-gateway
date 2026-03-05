@@ -3,55 +3,54 @@ pipeline{
      
     environment{
         DOCKER_IMAGE= "shejulv088/jenkins_api_gateway"
-        ENVIRONMENT= ""   // will be set dynamically
         ENV_HELM_REPO = "https://github.com/VaibhavShejul09/rankx-environments.git"
         KUBECONFIG_FILE = ''  // Will be set via withCredentials
     }
-    stage('Set Environment Based on Branch') {
-            steps {
-                script {
-                    if (env.BRANCH_NAME == "develop") {
-                        env.ENVIRONMENT = "dev"
-                    } 
-                    else if (env.BRANCH_NAME == "release") {
-                        env.ENVIRONMENT = "qa"
-                    } 
-                    else if (env.BRANCH_NAME == "master") {
-                        env.ENVIRONMENT = "prod"
-                    } 
-                    else {
-                        error "Branch ${env.BRANCH_NAME} not allowed for deployment"
-                    }
-
-                    echo "Branch: ${env.BRANCH_NAME}"
-                    echo "Deploying to namespace: ${env.ENVIRONMENT}"
-                }
-            }
-        }
     stages{
-        stage('Checkout the code'){
+        stage('Set Environment Based on Branch') {
+    steps {
+        script {
+
+            def branchMap = [
+                develop: "dev",
+                release: "qa",
+                master : "prod"
+            ]
+
+            if (!branchMap.containsKey(env.BRANCH_NAME)) {
+                error "Branch ${env.BRANCH_NAME} not allowed"
+            }
+
+            env.ENVIRONMENT = branchMap[env.BRANCH_NAME]
+
+            echo "Branch: ${env.BRANCH_NAME}"
+            echo "Deploying to namespace: ${env.ENVIRONMENT}"
+        }
+      }
+    }
+    stage('Checkout the code'){
             steps{
                 cleanWs()
-                git branch: 'master', url: 'https://github.com/VaibhavShejul09/api-gateway.git'
+                checkout scm
             }
         }
-        stage('Clean & Compile'){
+    stage('Clean & Compile'){
             steps{
                 sh 'mvn clean compile'
             }
         }
-        stage('Unit Test'){
+    stage('Unit Test'){
             steps{
                 sh 'mvn test'
             }
         }
-        stage('Package'){
+    stage('Package'){
             steps{
                 sh 'mvn package -DskipTests'
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true   //this tells jenkins store the artifacts in build hostory & fingerprint: true - track which build create which artifact
             }
         }
-        stage('build docker image'){
+    stage('build docker image'){
             steps{
                 script{
                     def tag= "${env.BUILD_NUMBER}-${env.GIT_COMMIT.take(7)}"
@@ -66,7 +65,7 @@ pipeline{
             }
         }
 */       
-        stage('Push to dockerhub'){
+    stage('Push to dockerhub'){
             steps{
                 withCredentials([usernamePassword(
                     credentialsId: 'dockerhub',
@@ -81,7 +80,7 @@ pipeline{
             }
         }
 
-        stage('Upadte the Helm Values'){
+    stage('Upadte the Helm Values'){
             steps{
                 withCredentials([string(credentialsId: 'git-token', variable: 'GIT_TOKEN')]) {
                sh '''
@@ -96,7 +95,10 @@ pipeline{
                 # Set remote URL with token safely
                 git remote set-url origin https://VaibhavShejul09:$GIT_TOKEN@github.com/VaibhavShejul09/rankx-environments.git
 
-                cd dev/api-gateway
+                # IMPORTANT: Pull latest
+                
+                git pull origin main
+                cd $ENVIRONMENT/api-gateway
 
                 # Update values.yaml
                 sed -i "s/tag:.*/tag: \\"$IMAGE_TAG\\"/" values.yaml
@@ -110,12 +112,23 @@ pipeline{
             }
         }
 
-        stage('Checkout Helm Charts & deploy') {
+    stage('Manual Approval for Prod') {
+               when {
+                  branch  'master'
+                  }
+                  steps {
+                      input "Deploy to PRODUCTION?"
+          }
+      }    
+
+    stage('Checkout Helm Charts & deploy') {
                 steps {
                   withCredentials([string(credentialsId: 'git-token', variable: 'GIT_TOKEN')]) {
                     sh '''
                          # Clean previous helm repo folder
                          # rm -rf rankx-environments
+
+                         # git clone $ENV_HELM_REPO 
                          # Clone the helm / environment repo
                          git clone https://VaibhavShejul09:$GIT_TOKEN@github.com/VaibhavShejul09/centralized-helm-repo.git
 
@@ -130,13 +143,6 @@ pipeline{
                  }   
              }
         }
-        stage('Manual Approval for Prod') {
-               when {
-                  branch  'master'
-                  }
-                  steps {
-                      input "Deploy to PRODUCTION?"
-          }
-      }
     }
 }
+
