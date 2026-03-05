@@ -6,7 +6,8 @@ pipeline{
         ENV_HELM_REPO = "https://github.com/VaibhavShejul09/rankx-environments.git"
         KUBECONFIG_FILE = ''  // Will be set via withCredentials
     }
-   stage('Set Environment Based on Branch') {
+    stages{
+        stage('Set Environment Based on Branch') {
     steps {
         script {
 
@@ -142,7 +143,6 @@ pipeline{
                  }   
              }
         }
-    
     }
 }
 
