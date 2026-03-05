@@ -116,6 +116,8 @@ pipeline{
                     sh '''
                          # Clean previous helm repo folder
                          # rm -rf rankx-environments
+
+                         git clone $ENV_HELM_REPO 
                          # Clone the helm / environment repo
                          git clone https://VaibhavShejul09:$GIT_TOKEN@github.com/VaibhavShejul09/centralized-helm-repo.git
 
