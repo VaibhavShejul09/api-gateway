@@ -7,7 +7,8 @@ pipeline{
         ENV_HELM_REPO = "https://github.com/VaibhavShejul09/rankx-environments.git"
         KUBECONFIG_FILE = ''  // Will be set via withCredentials
     }
-    stage('Set Environment Based on Branch') {
+    stages{
+        stage('Set Environment Based on Branch') {
             steps {
                 script {
                     if (env.BRANCH_NAME == "develop") {
@@ -28,30 +29,29 @@ pipeline{
                 }
             }
         }
-    stages{
-        stage('Checkout the code'){
+    stage('Checkout the code'){
             steps{
                 cleanWs()
                 git branch: 'master', url: 'https://github.com/VaibhavShejul09/api-gateway.git'
             }
         }
-        stage('Clean & Compile'){
+    stage('Clean & Compile'){
             steps{
                 sh 'mvn clean compile'
             }
         }
-        stage('Unit Test'){
+    stage('Unit Test'){
             steps{
                 sh 'mvn test'
             }
         }
-        stage('Package'){
+    stage('Package'){
             steps{
                 sh 'mvn package -DskipTests'
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true   //this tells jenkins store the artifacts in build hostory & fingerprint: true - track which build create which artifact
             }
         }
-        stage('build docker image'){
+    stage('build docker image'){
             steps{
                 script{
                     def tag= "${env.BUILD_NUMBER}-${env.GIT_COMMIT.take(7)}"
@@ -66,7 +66,7 @@ pipeline{
             }
         }
 */       
-        stage('Push to dockerhub'){
+    stage('Push to dockerhub'){
             steps{
                 withCredentials([usernamePassword(
                     credentialsId: 'dockerhub',
@@ -81,7 +81,7 @@ pipeline{
             }
         }
 
-        stage('Upadte the Helm Values'){
+    stage('Upadte the Helm Values'){
             steps{
                 withCredentials([string(credentialsId: 'git-token', variable: 'GIT_TOKEN')]) {
                sh '''
@@ -110,7 +110,7 @@ pipeline{
             }
         }
 
-        stage('Checkout Helm Charts & deploy') {
+    stage('Checkout Helm Charts & deploy') {
                 steps {
                   withCredentials([string(credentialsId: 'git-token', variable: 'GIT_TOKEN')]) {
                     sh '''
@@ -130,7 +130,7 @@ pipeline{
                  }   
              }
         }
-        stage('Manual Approval for Prod') {
+    stage('Manual Approval for Prod') {
                when {
                   branch  'master'
                   }
@@ -140,3 +140,4 @@ pipeline{
       }
     }
 }
+
