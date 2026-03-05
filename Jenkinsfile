@@ -117,7 +117,9 @@ pipeline{
                   branch  'master'
                   }
                   steps {
-                      input "Deploy to PRODUCTION?"
+                      timeout(time: 10, unit: 'MINUTES') {
+                      input message: "Approve Prod Deployment?"
+                  }
           }
       }    
 
