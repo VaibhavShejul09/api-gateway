@@ -96,7 +96,10 @@ pipeline{
                 # Set remote URL with token safely
                 git remote set-url origin https://VaibhavShejul09:$GIT_TOKEN@github.com/VaibhavShejul09/rankx-environments.git
 
-                cd dev/api-gateway
+                # IMPORTANT: Pull latest
+                
+                git pull origin main
+                cd $ENVIRONMENT/api-gateway
 
                 # Update values.yaml
                 sed -i "s/tag:.*/tag: \\"$IMAGE_TAG\\"/" values.yaml
